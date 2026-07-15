@@ -9,21 +9,19 @@ app = FastAPI()
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 SECRET_API_KEY = os.environ.get("WHISPER_API_KEY", "AlapertelmezettBiztonsagiJelszo123")
 
-# JAVÍTÁS: A hivatalos CTranslate2 modellt töltjük be, ami biztosan elindul CPU-n!
-print("🤖 Whisper Base (int8) modell betöltése CPU-ra...")
-model = WhisperModel("Systran/whisper-base", device="cpu", compute_type="int8")
+model = WhisperModel("Systran/faster-whisper-large-v3", device="cpu", compute_type="int8")
 
 async def get_api_key(api_key: str = Security(api_key_header)):
     if api_key == SECRET_API_KEY:
         return api_key
     raise HTTPException(
         status_code=status.HTTP_403_FORBIDDEN, 
-        detail="Érvénytelen API Kulcs! Túlterhelés elleni védelem aktív."
+        detail="Invalid API key (unauthorized)!"
     )
 
 @app.get("/")
 def home():
-    return {"status": "online", "message": "A javított Whisper API sikeresen fut a Renderen!"}
+    return {"status": "online", "message": "Running...!"}
 
 @app.post("/transcribe")
 async def transcribe_audio(file: UploadFile = File(...), api_key: str = Security(get_api_key)):
