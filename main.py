@@ -9,7 +9,7 @@ app = FastAPI()
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 SECRET_API_KEY = os.environ.get("WHISPER_API_KEY", "AlapertelmezettBiztonsagiJelszo123")
 
-model = WhisperModel("Systran/faster-whisper-large-v3", device="cpu", compute_type="int8")
+model = WhisperModel("jieu/faster-whisper-medium-int8", device="cpu", compute_type="int8")
 
 async def get_api_key(api_key: str = Security(api_key_header)):
     if api_key == SECRET_API_KEY:
